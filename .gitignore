@@ -3,6 +3,8 @@
 *.pyc
 tornado/uploads/*
 tornado/static/tmp/*
-
+logs/*
+tornado/models/japanese_talk_api.chainermodel
+tornado/models/vocab.bin
 
 !.gitkeep

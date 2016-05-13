@@ -10,8 +10,12 @@ from chainer import cuda, Variable, FunctionSet
 import chainer.functions as F
 from CharRNN import CharRNN, make_initial_state
 
+import MeCab
+
 import logging
 app_log = logging.getLogger("tornado")
+
+mt = MeCab.Tagger('-Ochasen')
 
 def prediction(args, vocab="", model=""):
 
@@ -28,7 +32,7 @@ def prediction(args, vocab="", model=""):
     # load model
     if model == "":
         model = pickle.load(open(args.model, 'rb'))
-    n_units = model.embed.W.shape[1]
+    n_units = model.embed.W.data.shape[1]
 
     if args.gpu >= 0:
         cuda.get_device(args.gpu).use()
@@ -44,9 +48,20 @@ def prediction(args, vocab="", model=""):
     if args.gpu >= 0:
         prev_char = cuda.to_gpu(prev_char)
     if len(args.primetext) > 0:
-        for i in args.primetext:
-            output += i
-            prev_char = np.ones((1,), dtype=np.int32) * vocab[i]
+        words = []
+        result = mt.parseToNode(args.primetext.encode('utf-8'))
+        while result:
+            words.append(unicode(result.surface, 'utf-8'))
+            result = result.next
+
+        print words
+
+        for word in words:
+            if (word in vocab):
+                val = vocab[word]
+            else:
+                val = 0
+            prev_char = np.ones((1,)).astype(np.int32) * val
             if args.gpu >= 0:
                 prev_char = cuda.to_gpu(prev_char)
 

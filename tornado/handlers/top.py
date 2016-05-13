@@ -41,8 +41,7 @@ class TopHandler(BaseHandler):
             args.sample = 1
             args.length = 500
             output = prediction(args, vocab=self.VOCAB, model=self.MODEL)
-
-            output = output[len(query):].lstrip("?\n").lstrip("？\n").lstrip("??\n").lstrip("？？\n").lstrip().split("\n\n")[0]
+            # output = output[len(query):].lstrip("?\n").lstrip("？\n").lstrip("??\n").lstrip("？？\n").lstrip().split("\n\n")[0]
 
             res["output"] = output
 
