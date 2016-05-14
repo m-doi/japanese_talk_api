@@ -3,6 +3,7 @@ import time
 import math
 import sys
 import argparse
+import os
 import cPickle as pickle
 
 import numpy as np
@@ -10,12 +11,19 @@ from chainer import cuda, Variable, FunctionSet
 import chainer.functions as F
 from CharRNN import CharRNN, make_initial_state
 
-import MeCab
+
+# Paasで動かしやすいように、MecabではなくIgoを使うようにした
+# import MeCab
+# mt = MeCab.Tagger('-Ochasen')
+
+from igo.Tagger import Tagger
+dicDir = os.path.join(os.path.dirname(__file__), "../dict/dict4igo")
 
 import logging
 app_log = logging.getLogger("tornado")
 
-mt = MeCab.Tagger('-Ochasen')
+
+tagger = Tagger(dicDir)
 
 def prediction(args, vocab="", model=""):
 
@@ -49,12 +57,14 @@ def prediction(args, vocab="", model=""):
         prev_char = cuda.to_gpu(prev_char)
     if len(args.primetext) > 0:
         words = []
-        result = mt.parseToNode(args.primetext.encode('utf-8'))
-        while result:
-            words.append(unicode(result.surface, 'utf-8'))
-            result = result.next
-
-        print words
+        results = tagger.parse(args.primetext)
+        for result in results:
+            words.append(result.surface)
+        # Mecabを使う場合はこちら
+        # result = mt.parseToNode(args.primetext.encode('utf-8'))
+        # while result:
+        #     words.append(unicode(result.surface, 'utf-8'))
+        #     result = result.next
 
         for word in words:
             if (word in vocab):

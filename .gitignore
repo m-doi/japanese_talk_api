@@ -6,5 +6,6 @@ tornado/static/tmp/*
 logs/*
 tornado/models/japanese_talk_api.chainermodel
 tornado/models/vocab.bin
+tornado/dict/*
 
 !.gitkeep
