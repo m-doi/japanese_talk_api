@@ -1,6 +1,7 @@
 import logging
 import tornado.template
 import os
+import sys
 from tornado.options import define, options
 
 import environment
@@ -36,9 +37,10 @@ logger = logging.getLogger("")
 logger.setLevel(LOG_LEVEL)
 
 app_log = logging.getLogger("tornado")
-app_log_handler = logging.handlers.RotatingFileHandler(
-                    path(os.path.abspath(os.path.dirname(os.path.dirname(__file__))), "logs", "app.log"),
-                    maxBytes=50000000, backupCount=5)
+# app_log_handler = logging.handlers.RotatingFileHandler(
+#                     path(os.path.abspath(os.path.dirname(os.path.dirname(__file__))), "logs", "app.log"),
+#                     maxBytes=50000000, backupCount=5)
+app_log_handler = logging.StreamHandler(sys.stdout)
 app_log_handler.setLevel(LOG_LEVEL)
 app_log_handler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s %(message)s'))
 app_log.addHandler(app_log_handler)
