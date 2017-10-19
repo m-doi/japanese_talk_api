@@ -1,29 +1,30 @@
 # Japanese Talk API
 
-Respond to Japanese (and English and maybe Korean) input by lstm language-model.
+## Setup
 
-Sample model was learned with crawled ask.fm data by yusuketomoto/chainer-char-rnn ( https://github.com/yusuketomoto/chainer-char-rnn ).
-
-A python file tornado/static/CharRNN.py is copied from yusuketomoto/chainer-char-rnn.
-
-## How to use (with docker).
-
-The Easiest way is use my docker image ( https://hub.docker.com/r/drunkar/cuda-caffe-anaconda-chainer/ ).
+1. python 2.7.9にする
 
 ```
-git clone https://github.com/Drunkar/japanese_talk_api.git
-
-docker run --name japanese_talk_api -d -p 80:8787 -v japanese_talk_api:/app drunkar/cuda-caffe-anaconda-chainer
-
-docker exec -it japanese_talk_api bash
-cd /app/tornado/models
-./download_sample_model.sh
-
-cd /app
-python tornado/app.py --port=8787 --debug=True
-ctrl+p, ctrl+q
+pyenv local 2.7.9
 ```
 
-( Run tornado app takes some times due to loading chainermodel file. )
+1. 依存ライブラリのインストール
 
-Then access ```http://localhost/?q=こんにちは```
+```
+pip install -r requirements.txt
+```
+
+1. tornado/models/の下にvocab.binとjapanese_talk_api.chainermodelを置く（https://github.com/m-doi/chainer-char-rnn で作ったものをrenameして置く）
+
+## Run
+
+1. 起動する
+```
+./run_app_local.sh
+```
+
+1. 試してみる
+
+```
+http://localhost:8787/?q=宮島さんの
+```
